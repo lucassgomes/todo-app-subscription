@@ -1,0 +1,39 @@
+version: "3.6"
+
+networks:
+  todo:
+    driver: bridge
+
+services:
+  postgres:
+    image: postgres:12
+    ports:
+      - 5432:5432
+    networks:
+      - todo
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: todoapp
+      POSTGRES_USER: todoappuser
+      POSTGRES_PASSWORD: password
+  api:
+    image: todo-api-dev
+    build: .
+    working_dir: /code
+    container_name: todo-api
+    command: bash -c 'yarn && yarn run start:dev'
+    volumes:
+      - ./:/code
+      - ./node_modules:/code/node_modules
+    ports:
+      - 3000:3000
+    links:
+      - postgres
+    depends_on:
+      - postgres
+    networks:
+      - todo
+    env_file: .env
+volumes:
+  db_data:

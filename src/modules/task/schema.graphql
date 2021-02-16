@@ -1,0 +1,16 @@
+type Query {
+  hello: String 
+}
+
+type Mutation {
+  createTask(title: String): Task
+}
+
+type Subscription {
+  taskCreated: Task
+}
+
+type Task {
+  id: Int!,
+  title: String!
+}
